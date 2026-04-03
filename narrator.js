@@ -377,7 +377,7 @@
     if (!('mediaSession' in navigator)) return;
     const l = getLang();
     navigator.mediaSession.metadata = new MediaMetadata({
-      title: l === 'ar' ? 'فقه السيرة' : l === 'fr' ? 'Comment Comprendre l\'Islam' : 'Understanding the Prophet's Biography',
+      title: l === 'ar' ? 'فقه السيرة' : l === 'fr' ? 'Comment Comprendre l\'Islam' : 'Understanding the Prophets Biography',
       artist: l === 'ar' ? 'الشيخ محمد الغزالي' : 'Sheikh Mohammed al-Ghazali',
       album: STATE.mode === 'book' ? (l === 'ar' ? 'الكتاب كاملاً' : l === 'fr' ? 'Livre complet' : 'Full Book') : getActiveTabName(),
     });
