@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════════
-   NARRATOR.JS — Audiobook narrator for Fiqh Al-Sirah
+   NARRATOR.JS — Audiobook narrator for Fiqh Al-Sirah al-Islam
    Features: section-by-section, book mode, karaoke,
    voice/speed/pitch, loop, lock screen, sleep timer
    ═══════════════════════════════════════════════════════════ */
@@ -28,92 +28,30 @@
 
   // ═══ I18N ═══
   const NR_T = {
-    ar: {
-      title: '🎧 الراوي',
-      page: 'اقرأ هذه الصفحة',
-      book: 'اقرأ ككتاب',
-      voice: 'الصوت',
-      speed: 'السرعة',
-      pitch: 'النبرة',
-      loop: 'تكرار البطاقة',
-      sleep: 'مؤقت النوم',
-      karaoke: 'كاريوكي',
-      autoScroll: 'تمرير تلقائي',
-      duo: 'ثنائي (عربي+فرنسي)',
-      off: 'إيقاف',
-      min: 'دقيقة',
-      bookDone: 'تم الانتهاء من الكتاب',
-      sleepDone: 'انتهى مؤقت النوم',
-      sleepSet: 'مؤقت النوم:',
-    },
-    en: {
-      title: '🎧 Narrator',
-      page: 'Read this page',
-      book: 'Read as a book',
-      voice: 'Voice',
-      speed: 'Speed',
-      pitch: 'Pitch',
-      loop: 'Loop card',
-      sleep: 'Sleep timer',
-      karaoke: 'Karaoke',
-      autoScroll: 'Auto-scroll',
-      duo: 'Duo (AR+FR)',
-      off: 'Off',
-      min: 'min',
-      bookDone: 'Book finished',
-      sleepDone: 'Sleep timer ended',
-      sleepSet: 'Sleep:',
-    },
-    fr: {
-      title: '🎧 Narrateur',
-      page: 'Lire cette page',
-      book: 'Lire comme un livre',
-      voice: 'Voix',
-      speed: 'Vitesse',
-      pitch: 'Tonalité',
-      loop: 'Répéter la carte',
-      sleep: 'Minuterie',
-      karaoke: 'Karaoké',
-      autoScroll: 'Défilement auto',
-      duo: 'Duo (AR+FR)',
-      off: 'Désactivé',
-      min: 'min',
-      bookDone: 'Livre terminé',
-      sleepDone: 'Minuterie terminée',
-      sleepSet: 'Minuterie:',
-    }
+    ar: { title: '🎧 الراوي', page: 'اقرأ هذه الصفحة', book: 'اقرأ ككتاب', voice: 'الصوت', speed: 'السرعة', pitch: 'النبرة', loop: 'تكرار البطاقة', sleep: 'مؤقت النوم', karaoke: 'كاريوكي', autoScroll: 'تمرير تلقائي', duo: 'ثنائي (عربي+فرنسي)', off: 'إيقاف', min: 'دقيقة', bookDone: 'تم الانتهاء من الكتاب', sleepDone: 'انتهى مؤقت النوم', sleepSet: 'مؤقت النوم:' },
+    en: { title: '🎧 Narrator', page: 'Read this page', book: 'Read as a book', voice: 'Voice', speed: 'Speed', pitch: 'Pitch', loop: 'Loop card', sleep: 'Sleep timer', karaoke: 'Karaoke', autoScroll: 'Auto-scroll', duo: 'Duo (AR+FR)', off: 'Off', min: 'min', bookDone: 'Book finished', sleepDone: 'Sleep timer ended', sleepSet: 'Sleep:' },
+    fr: { title: '🎧 Narrateur', page: 'Lire cette page', book: 'Lire comme un livre', voice: 'Voix', speed: 'Vitesse', pitch: 'Tonalité', loop: 'Répéter la carte', sleep: 'Minuterie', karaoke: 'Karaoké', autoScroll: 'Défilement auto', duo: 'Duo (AR+FR)', off: 'Désactivé', min: 'min', bookDone: 'Livre terminé', sleepDone: 'Minuterie terminée', sleepSet: 'Minuterie:' }
   };
 
   function nrT() { return NR_T[getLang()] || NR_T.en; }
 
   // ═══ STATE ═══
   const STATE = {
-    playing: false,
-    paused: false,
+    playing: false, paused: false,
     mode: 'page',
-    cardIndex: 0,
-    cards: [],
-    tabOrder: ['about','lessons','history'],
+    cardIndex: 0, cards: [],
+    tabOrder: ['about','concepts','principles','explorer'],
     tabIndex: 0,
-    loopCount: 0,
-    loopCurrent: 0,
-    sleepTimer: null,
-    sleepMinutes: 0,
+    loopCount: 0, loopCurrent: 0,
+    sleepTimer: null, sleepMinutes: 0,
     duoTimeout: null,
-    karaokeEnabled: true,
-    autoScroll: true,
-    duoReading: false,
-    speed: 1,
-    pitch: 1,
-    voiceAR: null,
-    voiceEN: null,
-    voiceFR: null,
+    karaokeEnabled: true, autoScroll: true, duoReading: false,
+    speed: 1, pitch: 1,
+    voiceAR: null, voiceEN: null, voiceFR: null,
   };
 
   // ═══ VOICE SELECTION ═══
-  function getLang() {
-    return document.documentElement.lang || 'ar';
-  }
+  function getLang() { return document.documentElement.lang || 'ar'; }
 
   function loadVoices() {
     const voices = speechSynthesis.getVoices();
@@ -128,10 +66,7 @@
 
   function findBestVoice(voices, priority, langCode) {
     const langVoices = voices.filter(v => v.lang.startsWith(langCode));
-    for (const pref of priority) {
-      const match = langVoices.find(v => v.name.includes(pref));
-      if (match) return match;
-    }
+    for (const pref of priority) { const match = langVoices.find(v => v.name.includes(pref)); if (match) return match; }
     return langVoices[0] || null;
   }
 
@@ -145,14 +80,8 @@
   loadVoices();
 
   // ═══ CARD EXTRACTION ═══
-  function getActivePanel() {
-    return document.querySelector('.panel.active');
-  }
-
-  function getActiveTabName() {
-    const btn = document.querySelector('.tab.active');
-    return btn ? btn.dataset.tab : 'about';
-  }
+  function getActivePanel() { return document.querySelector('.panel.active'); }
+  function getActiveTabName() { const btn = document.querySelector('.tab.active'); return btn ? btn.dataset.tab : 'about'; }
 
   function extractCards(panel) {
     if (!panel) return [];
@@ -163,24 +92,20 @@
       const title = panel.querySelector('.section-title');
       const desc = panel.querySelector('.section-desc');
       if (title) {
-        cards.push({
-          el: title.closest('.panel') || title,
-          text: (title.textContent || '') + '. ' + (desc ? desc.textContent : ''),
-          type: 'title'
-        });
+        cards.push({ el: title.closest('.panel') || title, text: (title.textContent || '') + '. ' + (desc ? desc.textContent : ''), type: 'title' });
       }
     }
 
     if (tabName === 'about') {
-      panel.querySelectorAll('.about-disclaimer, .about-author, .about-section').forEach(el => {
+      panel.querySelectorAll('.about-card').forEach(el => {
         const text = cleanText(el.textContent);
         if (text) cards.push({ el, text, type: 'about' });
       });
-    } else if (tabName === 'lessons') {
-      panel.querySelectorAll('.principle-card').forEach(el => {
+    } else if (tabName === 'concepts') {
+      panel.querySelectorAll('.concept-card').forEach(el => {
         if (el.style.display === 'none') return;
-        const t = el.querySelector('.principle-title');
-        const d = el.querySelector('.principle-desc');
+        const t = el.querySelector('.concept-title');
+        const d = el.querySelector('.concept-desc');
         const v = el.querySelector('.verse-arabic');
         const a = el.querySelector('.action-box');
         let text = '';
@@ -188,12 +113,17 @@
         if (d) text += d.textContent + '. ';
         if (v) text += v.textContent + '. ';
         if (a) text += a.textContent;
-        cards.push({ el, text: cleanText(text), type: 'lesson' });
+        cards.push({ el, text: cleanText(text), type: 'concept' });
       });
-    } else if (tabName === 'history') {
-      panel.querySelectorAll('.history-card').forEach(el => {
+    } else if (tabName === 'principles') {
+      panel.querySelectorAll('.about-card.principle-item').forEach(el => {
         const text = cleanText(el.textContent);
-        cards.push({ el, text, type: 'history' });
+        if (text) cards.push({ el, text, type: 'principle' });
+      });
+    } else if (tabName === 'explorer') {
+      panel.querySelectorAll('.about-card.explorer-card').forEach(el => {
+        const text = cleanText(el.textContent);
+        if (text) cards.push({ el, text, type: 'explorer' });
       });
     } else if (tabName === 'home') {
       const daily = panel.querySelector('.daily-card');
@@ -205,60 +135,37 @@
   function cleanText(text) {
     var clean = text.replace(/\s+/g, ' ').replace(/[\u{1F000}-\u{1FFFF}\u{2600}-\u{27BF}\u{FE00}-\u{FEFF}\u{1F900}-\u{1F9FF}\u{200D}\u{20E3}\u{E0020}-\u{E007F}\u{2190}-\u{21FF}↑↓←→✓]/gu, '').trim();
     clean = clean.replace(/[«»""()[\]{}—–•●◆■▪]/g, ' ').replace(/\s+/g, ' ');
-    clean = clean
-      .replace(/:\s/g, ':, ')
-      .replace(/;\s/g, ';, ')
-      .replace(/\s—\s/g, ', ')
-      .replace(/\.\.\./g, ', ')
-      .replace(/\s*\n\s*/g, '. ');
+    clean = clean.replace(/:\s/g, ':, ').replace(/;\s/g, ';, ').replace(/\s—\s/g, ', ').replace(/\.\.\./g, ', ').replace(/\s*\n\s*/g, '. ');
 
     var l = getLang();
 
     if (l === 'fr') {
       clean = clean
-        .replace(/al-Ghazali/gi, 'al Razali')
-        .replace(/Ghazali/gi, 'Razali')
-        .replace(/Sheikh/gi, 'Cheikh')
-        .replace(/Mohammed/gi, 'Mohamèd')
-        .replace(/Carnegie/gi, 'Carnégi')
-        .replace(/Al-Azhar/gi, 'al Azar')
-        .replace(/Faisal/gi, 'Faycal')
-        .replace(/Nasih Ulwan/gi, 'Nassih Oulwane')
-        .replace(/Fiqh Al-Sirah/gi, 'Hassad al Rourour')
-        .replace(/Saladin/gi, 'Salah ad-Dine')
-        .replace(/\bet\b/g, ', et')
-        .replace(/\bmais\b/g, ', mais')
-        .replace(/\bou\b/g, ', ou')
-        .replace(/\bcar\b/g, ', car')
-        .replace(/\bdonc\b/g, ', donc');
+        .replace(/al-Ghazali/gi, 'al Razali').replace(/Ghazali/gi, 'Razali')
+        .replace(/Sheikh/gi, 'Cheikh').replace(/Mohammed/gi, 'Mohamèd')
+        .replace(/Al-Azhar/gi, 'al Azar').replace(/Faisal/gi, 'Faycal')
+        .replace(/Fiqh Al-Sirah/gi, 'Kaifa Nafham')
+        .replace(/\bet\b/g, ', et').replace(/\bmais\b/g, ', mais')
+        .replace(/\bou\b/g, ', ou').replace(/\bcar\b/g, ', car').replace(/\bdonc\b/g, ', donc');
     }
 
     if (l === 'en') {
       clean = clean
-        .replace(/al-Ghazali/gi, 'al Gah-zah-lee')
-        .replace(/Ghazali/gi, 'Gah-zah-lee')
-        .replace(/Fiqh Al-Sirah/gi, 'Hassad al Ghuroor')
-        .replace(/\band\b/g, ', and')
-        .replace(/\bbut\b/g, ', but')
-        .replace(/\bor\b/g, ', or')
-        .replace(/\bhowever\b/gi, ', however,');
+        .replace(/al-Ghazali/gi, 'al Gah-zah-lee').replace(/Ghazali/gi, 'Gah-zah-lee')
+        .replace(/Fiqh Al-Sirah/gi, 'Kay-fa Naf-ham')
+        .replace(/\band\b/g, ', and').replace(/\bbut\b/g, ', but')
+        .replace(/\bor\b/g, ', or').replace(/\bhowever\b/gi, ', however,');
     }
 
     if (l === 'ar') {
       clean = clean
-        .replace(/Carnegie/gi, 'كارنيجي')
-        .replace(/Dale/gi, 'ديل')
-        .replace(/Al-Azhar/gi, 'الأزهر')
-        .replace(/GitHub/gi, 'غيت هاب')
+        .replace(/Al-Azhar/gi, 'الأزهر').replace(/GitHub/gi, 'غيت هاب')
         .replace(/https?:\/\/[^\s]+/g, '')
         .replace(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g, '')
         .replace(/workshop-diy\.org/gi, '')
         .replace(/[a-zA-Z]{4,}/g, '')
-        .replace(/\bو\b/g, '، و')
-        .replace(/\bلكن\b/g, '، لكن')
-        .replace(/\bأو\b/g, '، أو')
-        .replace(/\bثم\b/g, '، ثم')
-        .replace(/\bبل\b/g, '، بل');
+        .replace(/\bو\b/g, '، و').replace(/\bلكن\b/g, '، لكن')
+        .replace(/\bأو\b/g, '، أو').replace(/\bثم\b/g, '، ثم').replace(/\bبل\b/g, '، بل');
     }
 
     return clean.replace(/,\s*,/g, ',').replace(/\s+/g, ' ').trim();
@@ -271,11 +178,7 @@
     speakGen++;
     var myGen = speakGen;
     speechSynthesis.cancel();
-
-    if (!text || !text.trim()) {
-      if (onEnd) onEnd();
-      return;
-    }
+    if (!text || !text.trim()) { if (onEnd) onEnd(); return; }
 
     var l = getLang();
     var utt = new SpeechSynthesisUtterance(text);
@@ -295,15 +198,11 @@
 
     var done = false;
     function finish() {
-      if (done) return;
-      done = true;
-      clearHighlights();
+      if (done) return; done = true; clearHighlights();
       if (myGen !== speakGen) return;
       if (onEnd) onEnd();
     }
-
-    utt.onend = finish;
-    utt.onerror = finish;
+    utt.onend = finish; utt.onerror = finish;
     speechSynthesis.speak(utt);
 
     var pollStarted = false;
@@ -311,22 +210,14 @@
       if (done || myGen !== speakGen) { clearInterval(pollInterval); return; }
       if (speechSynthesis.speaking) { pollStarted = true; }
       if (pollStarted && speechSynthesis.paused && !STATE.paused) { speechSynthesis.resume(); }
-      if (pollStarted && !speechSynthesis.speaking && !speechSynthesis.pending) {
-        clearInterval(pollInterval);
-        finish();
-      }
+      if (pollStarted && !speechSynthesis.speaking && !speechSynthesis.pending) { clearInterval(pollInterval); finish(); }
     }, 500);
 
     var maxWait = Math.max(5000, (text.length / 3) * (1000 / STATE.speed)) + 3000;
-    setTimeout(function() {
-      if (!done && myGen === speakGen) {
-        clearInterval(pollInterval);
-        finish();
-      }
-    }, maxWait);
+    setTimeout(function() { if (!done && myGen === speakGen) { clearInterval(pollInterval); finish(); } }, maxWait);
   }
 
-  // ═══ KARAOKE HIGHLIGHT ═══
+  // ═══ KARAOKE ═══
   function highlightWord(el, charIndex, charLength, fullText) {
     if (!el || !charLength) return;
     const word = fullText.slice(charIndex, charIndex + charLength);
@@ -349,21 +240,16 @@
 
   function clearHighlights() {
     document.querySelectorAll('.narrator-word-highlight').forEach(el => {
-      const parent = el.parentNode;
-      parent.replaceChild(document.createTextNode(el.textContent), el);
-      parent.normalize();
+      const parent = el.parentNode; parent.replaceChild(document.createTextNode(el.textContent), el); parent.normalize();
     });
   }
 
   function highlightCard(el) {
     document.querySelectorAll('.narrator-active-card').forEach(e => e.classList.remove('narrator-active-card'));
-    if (el) {
-      el.classList.add('narrator-active-card');
-      if (STATE.autoScroll) { el.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
-    }
+    if (el) { el.classList.add('narrator-active-card'); if (STATE.autoScroll) el.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
   }
 
-  // ═══ PLAYBACK CONTROL ═══
+  // ═══ PLAYBACK ═══
   function readCurrentCard() {
     if (STATE.cardIndex >= STATE.cards.length) {
       if (STATE.mode === 'book') { nextTab(); } else { stopNarrator(); }
@@ -371,43 +257,25 @@
     }
     const card = STATE.cards[STATE.cardIndex];
     highlightCard(card.el);
-    if (card.type === 'lesson' && card.el && !card.el.classList.contains('open')) {
-      card.el.classList.add('open');
-    }
+    if (card.type === 'concept' && card.el && !card.el.classList.contains('open')) { card.el.classList.add('open'); }
     updateProgress();
-
     speak(card.text, function() {
       if (!STATE.playing) return;
-      if (STATE.duoReading && getLang() === 'ar') {
-        readDuoTranslation(card, function() { afterCardDone(); });
-        return;
-      }
+      if (STATE.duoReading && getLang() === 'ar') { readDuoTranslation(card, function() { afterCardDone(); }); return; }
       afterCardDone();
     });
   }
 
   function afterCardDone() {
     if (!STATE.playing) return;
-    if (STATE.loopCount > 0) {
-      STATE.loopCurrent++;
-      if (STATE.loopCurrent < STATE.loopCount) {
-        setTimeout(function() { if (STATE.playing) readCurrentCard(); }, 300);
-        return;
-      }
-      STATE.loopCurrent = 0;
-    }
+    if (STATE.loopCount > 0) { STATE.loopCurrent++; if (STATE.loopCurrent < STATE.loopCount) { setTimeout(function() { if (STATE.playing) readCurrentCard(); }, 300); return; } STATE.loopCurrent = 0; }
     var justRead = STATE.cards[STATE.cardIndex];
     var delay = 1200;
-    if (justRead) {
-      if (justRead.type === 'title') delay = 2500;
-      else if (justRead.text && justRead.text.length > 150) delay = 2000;
-    }
+    if (justRead) { if (justRead.type === 'title') delay = 2500; else if (justRead.text && justRead.text.length > 150) delay = 2000; }
     STATE.cardIndex++;
     if (!STATE.playing) return;
     document.querySelectorAll('.narrator-active-card').forEach(function(e) { e.classList.remove('narrator-active-card'); });
-    setTimeout(function() {
-      if (STATE.playing) readCurrentCard();
-    }, delay);
+    setTimeout(function() { if (STATE.playing) readCurrentCard(); }, delay);
   }
 
   function readDuoTranslation(card, onEnd) {
@@ -415,49 +283,27 @@
     const duoVoice = getVoiceForLang(duoLang);
     let duoText = '';
 
-    const lessonId = card.el ? card.el.id : '';
-    const lMatch = lessonId.match(/lesson-(\d+)/);
-    if (lMatch && typeof LESSONS !== 'undefined') {
-      const p = LESSONS[parseInt(lMatch[1]) - 1];
-      if (p && p[duoLang]) {
-        duoText = p[duoLang].title + '. ' + p[duoLang].desc;
-      }
+    const conceptId = card.el ? card.el.id : '';
+    const cMatch = conceptId.match(/concept-(\d+)/);
+    if (cMatch && typeof CONCEPTS !== 'undefined') {
+      const c = CONCEPTS[parseInt(cMatch[1]) - 1];
+      if (c && c[duoLang]) { duoText = c[duoLang].title + '. ' + c[duoLang].desc; }
     }
 
-    if (!duoText && card.type === 'history' && typeof HISTORY_DATA !== 'undefined') {
-      const historyCards = Array.from(card.el.parentNode.querySelectorAll('.history-card'));
-      const idx = historyCards.indexOf(card.el);
-      if (idx >= 0 && HISTORY_DATA[idx] && HISTORY_DATA[idx][duoLang]) {
-        const h = HISTORY_DATA[idx][duoLang];
-        duoText = (h.title || '') + '. ' + (h.story || '');
-      }
-    }
-
-    if (!duoText) {
-      if (onEnd) onEnd();
-      return;
-    }
+    if (!duoText) { if (onEnd) onEnd(); return; }
 
     let duoCalled = false;
     function duoDone() { if (!duoCalled) { duoCalled = true; STATE.duoTimeout = null; if (onEnd) onEnd(); } }
     const utt = new SpeechSynthesisUtterance(cleanText(duoText));
-    utt.voice = duoVoice;
-    utt.lang = 'fr-FR';
-    utt.rate = STATE.speed;
-    utt.pitch = STATE.pitch;
-    utt.onend = duoDone;
-    utt.onerror = duoDone;
+    utt.voice = duoVoice; utt.lang = 'fr-FR'; utt.rate = STATE.speed; utt.pitch = STATE.pitch;
+    utt.onend = duoDone; utt.onerror = duoDone;
     STATE.duoTimeout = setTimeout(function() { if (STATE.playing) speechSynthesis.speak(utt); else duoDone(); }, 300);
   }
 
   // ═══ BOOK MODE ═══
   function nextTab() {
     STATE.tabIndex++;
-    if (STATE.tabIndex >= STATE.tabOrder.length) {
-      stopNarrator();
-      showToast(nrT().bookDone);
-      return;
-    }
+    if (STATE.tabIndex >= STATE.tabOrder.length) { stopNarrator(); showToast(nrT().bookDone); return; }
     switchToTab(STATE.tabOrder[STATE.tabIndex]);
   }
 
@@ -470,74 +316,39 @@
         STATE.cards = extractCards(getActivePanel());
         STATE.cardIndex = 0;
         const title = getActivePanel().querySelector('.section-title');
-        if (title) {
-          speak(title.textContent, function() {
-            if (!STATE.playing) return;
-            setTimeout(function() { if (STATE.playing) readCurrentCard(); }, 300);
-          });
-        } else {
-          readCurrentCard();
-        }
+        if (title) { speak(title.textContent, function() { if (!STATE.playing) return; setTimeout(function() { if (STATE.playing) readCurrentCard(); }, 300); }); }
+        else { readCurrentCard(); }
       }, 400);
     }
   }
 
   // ═══ PUBLIC CONTROLS ═══
   function playPage() {
-    STATE.mode = 'page';
-    STATE.cards = extractCards(getActivePanel());
-    STATE.cardIndex = 0;
-    STATE.playing = true;
-    STATE.paused = false;
-    closePanel();
-    updateUI();
-    setupMediaSession();
+    STATE.mode = 'page'; STATE.cards = extractCards(getActivePanel()); STATE.cardIndex = 0;
+    STATE.playing = true; STATE.paused = false; closePanel(); updateUI(); setupMediaSession();
     if (typeof showToast === 'function') showToast(nrT().page);
     readCurrentCard();
   }
 
   function playBook() {
-    STATE.mode = 'book';
-    STATE.tabIndex = 0;
-    STATE.playing = true;
-    STATE.paused = false;
-    closePanel();
-    updateUI();
-    setupMediaSession();
+    STATE.mode = 'book'; STATE.tabIndex = 0; STATE.playing = true; STATE.paused = false;
+    closePanel(); updateUI(); setupMediaSession();
     if (typeof showToast === 'function') showToast(nrT().book);
     switchToTab(STATE.tabOrder[0]);
   }
 
-  function closePanel() {
-    const panel = document.getElementById('narratorPanel');
-    if (panel && !panel.classList.contains('hidden')) panel.classList.add('hidden');
-  }
+  function closePanel() { const panel = document.getElementById('narratorPanel'); if (panel && !panel.classList.contains('hidden')) panel.classList.add('hidden'); }
 
   function pauseNarrator() {
-    if (STATE.playing && !STATE.paused) {
-      speechSynthesis.pause();
-      STATE.paused = true;
-      if ('mediaSession' in navigator) navigator.mediaSession.playbackState = 'paused';
-      updateUI();
-    } else if (STATE.paused) {
-      speechSynthesis.resume();
-      STATE.paused = false;
-      if ('mediaSession' in navigator) navigator.mediaSession.playbackState = 'playing';
-      updateUI();
-    }
+    if (STATE.playing && !STATE.paused) { speechSynthesis.pause(); STATE.paused = true; if ('mediaSession' in navigator) navigator.mediaSession.playbackState = 'paused'; updateUI(); }
+    else if (STATE.paused) { speechSynthesis.resume(); STATE.paused = false; if ('mediaSession' in navigator) navigator.mediaSession.playbackState = 'playing'; updateUI(); }
   }
 
-  function cancelDuo() {
-    if (STATE.duoTimeout) { clearTimeout(STATE.duoTimeout); STATE.duoTimeout = null; }
-  }
+  function cancelDuo() { if (STATE.duoTimeout) { clearTimeout(STATE.duoTimeout); STATE.duoTimeout = null; } }
 
   function stopNarrator() {
-    speakGen++;
-    cancelDuo();
-    speechSynthesis.cancel();
-    STATE.playing = false;
-    STATE.paused = false;
-    STATE.cardIndex = 0;
+    speakGen++; cancelDuo(); speechSynthesis.cancel();
+    STATE.playing = false; STATE.paused = false; STATE.cardIndex = 0;
     clearHighlights();
     document.querySelectorAll('.narrator-active-card').forEach(e => e.classList.remove('narrator-active-card'));
     if (STATE.sleepTimer) { clearTimeout(STATE.sleepTimer); STATE.sleepTimer = null; }
@@ -546,49 +357,27 @@
   }
 
   function nextCard() {
-    if (!STATE.playing) return;
-    speakGen++;
-    cancelDuo();
-    speechSynthesis.cancel();
-    clearHighlights();
-    STATE.loopCurrent = 0;
-    STATE.cardIndex++;
-    if (STATE.cardIndex >= STATE.cards.length) {
-      if (STATE.mode === 'book') { nextTab(); } else { stopNarrator(); }
-      return;
-    }
+    if (!STATE.playing) return; speakGen++; cancelDuo(); speechSynthesis.cancel(); clearHighlights(); STATE.loopCurrent = 0; STATE.cardIndex++;
+    if (STATE.cardIndex >= STATE.cards.length) { if (STATE.mode === 'book') { nextTab(); } else { stopNarrator(); } return; }
     readCurrentCard();
   }
 
   function prevCard() {
-    if (!STATE.playing) return;
-    speakGen++;
-    cancelDuo();
-    speechSynthesis.cancel();
-    clearHighlights();
-    STATE.loopCurrent = 0;
-    STATE.cardIndex = Math.max(0, STATE.cardIndex - 1);
-    readCurrentCard();
+    if (!STATE.playing) return; speakGen++; cancelDuo(); speechSynthesis.cancel(); clearHighlights(); STATE.loopCurrent = 0;
+    STATE.cardIndex = Math.max(0, STATE.cardIndex - 1); readCurrentCard();
   }
 
-  // ═══ SLEEP TIMER ═══
   function setSleepTimer(minutes) {
     if (STATE.sleepTimer) clearTimeout(STATE.sleepTimer);
     STATE.sleepMinutes = minutes;
-    if (minutes > 0) {
-      STATE.sleepTimer = setTimeout(() => {
-        stopNarrator();
-        showToast(nrT().sleepDone);
-      }, minutes * 60000);
-    }
+    if (minutes > 0) { STATE.sleepTimer = setTimeout(() => { stopNarrator(); showToast(nrT().sleepDone); }, minutes * 60000); }
   }
 
-  // ═══ LOCK SCREEN ═══
   function setupMediaSession() {
     if (!('mediaSession' in navigator)) return;
     const l = getLang();
     navigator.mediaSession.metadata = new MediaMetadata({
-      title: l === 'ar' ? 'فقه السيرة' : l === 'fr' ? 'La Moisson de l\'Orgueil' : 'Understanding the Prophet's Biography',
+      title: l === 'ar' ? 'فقه السيرة' : l === 'fr' ? 'Comment Comprendre l\'Islam' : 'Understanding the Prophet's Biography',
       artist: l === 'ar' ? 'الشيخ محمد الغزالي' : 'Sheikh Mohammed al-Ghazali',
       album: STATE.mode === 'book' ? (l === 'ar' ? 'الكتاب كاملاً' : l === 'fr' ? 'Livre complet' : 'Full Book') : getActiveTabName(),
     });
@@ -600,26 +389,19 @@
     navigator.mediaSession.setActionHandler('stop', stopNarrator);
   }
 
-  // ═══ PROGRESS ═══
   function updateProgress() {
-    const total = STATE.cards.length;
-    const current = STATE.cardIndex + 1;
-    const el = document.getElementById('narratorProgress');
-    if (el) el.textContent = `${current}/${total}`;
-    const bar = document.getElementById('narratorBar');
-    if (bar) bar.style.width = (current / total * 100) + '%';
+    const total = STATE.cards.length; const current = STATE.cardIndex + 1;
+    const el = document.getElementById('narratorProgress'); if (el) el.textContent = `${current}/${total}`;
+    const bar = document.getElementById('narratorBar'); if (bar) bar.style.width = (current / total * 100) + '%';
   }
 
-  // ═══ UI UPDATE ═══
   function updateUI() {
     const btn = document.getElementById('narratorMainBtn');
     const playBtn = document.getElementById('narratorPlayPause');
     if (btn) btn.classList.toggle('active', STATE.playing);
     if (playBtn) playBtn.textContent = STATE.playing && !STATE.paused ? '⏸️' : '▶️';
-    const speedEl = document.getElementById('narratorSpeed');
-    if (speedEl) speedEl.value = STATE.speed;
-    const speedLabel = document.getElementById('narratorSpeedLabel');
-    if (speedLabel) speedLabel.textContent = STATE.speed + 'x';
+    const speedEl = document.getElementById('narratorSpeed'); if (speedEl) speedEl.value = STATE.speed;
+    const speedLabel = document.getElementById('narratorSpeedLabel'); if (speedLabel) speedLabel.textContent = STATE.speed + 'x';
   }
 
   function updateLabels() {
@@ -639,112 +421,57 @@
     document.querySelectorAll('[data-nr="off"]').forEach(el => el.textContent = t.off);
   }
 
-  // ═══ PANEL TOGGLE ═══
   function toggleNarratorPanel() {
-    const panel = document.getElementById('narratorPanel');
-    if (!panel) return;
+    const panel = document.getElementById('narratorPanel'); if (!panel) return;
     panel.classList.toggle('hidden');
-    if (!panel.classList.contains('hidden')) {
-      updateLabels();
-      populateVoiceSelect();
-      syncCheckboxes();
-    }
+    if (!panel.classList.contains('hidden')) { updateLabels(); populateVoiceSelect(); syncCheckboxes(); }
     if (typeof playSound === 'function') playSound('click');
   }
 
   function syncCheckboxes() {
-    const panel = document.getElementById('narratorPanel');
-    if (!panel) return;
+    const panel = document.getElementById('narratorPanel'); if (!panel) return;
     const toggles = panel.querySelectorAll('.narrator-toggle input[type=checkbox]');
     if (toggles[0]) toggles[0].checked = STATE.karaokeEnabled;
     if (toggles[1]) toggles[1].checked = STATE.autoScroll;
     if (toggles[2]) toggles[2].checked = STATE.duoReading;
-    const speedEl = document.getElementById('narratorSpeed');
-    if (speedEl) speedEl.value = STATE.speed;
-    const speedLabel = document.getElementById('narratorSpeedLabel');
-    if (speedLabel) speedLabel.textContent = STATE.speed + 'x';
-    const pitchEl = document.getElementById('narratorPitch');
-    if (pitchEl) pitchEl.value = STATE.pitch;
-    const pitchLabel = document.getElementById('narratorPitchLabel');
-    if (pitchLabel) pitchLabel.textContent = STATE.pitch.toFixed(1);
+    const speedEl = document.getElementById('narratorSpeed'); if (speedEl) speedEl.value = STATE.speed;
+    const speedLabel = document.getElementById('narratorSpeedLabel'); if (speedLabel) speedLabel.textContent = STATE.speed + 'x';
+    const pitchEl = document.getElementById('narratorPitch'); if (pitchEl) pitchEl.value = STATE.pitch;
+    const pitchLabel = document.getElementById('narratorPitchLabel'); if (pitchLabel) pitchLabel.textContent = STATE.pitch.toFixed(1);
   }
 
-  // ═══ SETTINGS HANDLERS ═══
-  function onSpeedChange(val) {
-    STATE.speed = parseFloat(val);
-    const label = document.getElementById('narratorSpeedLabel');
-    if (label) label.textContent = STATE.speed + 'x';
-    localStorage.setItem('fs-narrator-speed', STATE.speed);
-  }
-
-  function onPitchChange(val) {
-    STATE.pitch = parseFloat(val);
-    const label = document.getElementById('narratorPitchLabel');
-    if (label) label.textContent = STATE.pitch.toFixed(1);
-    localStorage.setItem('fs-narrator-pitch', STATE.pitch);
-  }
-
+  // ═══ SETTINGS ═══
+  function onSpeedChange(val) { STATE.speed = parseFloat(val); const label = document.getElementById('narratorSpeedLabel'); if (label) label.textContent = STATE.speed + 'x'; localStorage.setItem('fs-narrator-speed', STATE.speed); }
+  function onPitchChange(val) { STATE.pitch = parseFloat(val); const label = document.getElementById('narratorPitchLabel'); if (label) label.textContent = STATE.pitch.toFixed(1); localStorage.setItem('fs-narrator-pitch', STATE.pitch); }
   function onLoopChange(val) { STATE.loopCount = parseInt(val); }
+  function onSleepChange(val) { setSleepTimer(parseInt(val)); if (parseInt(val) > 0) { if (typeof showToast === 'function') showToast(nrT().sleepSet + ' ' + val + ' ' + nrT().min); } }
+  function onKaraokeToggle(checked) { STATE.karaokeEnabled = checked; localStorage.setItem('fs-narrator-karaoke', checked); }
+  function onAutoScrollToggle(checked) { STATE.autoScroll = checked; localStorage.setItem('fs-narrator-autoscroll', checked); }
+  function onDuoToggle(checked) { STATE.duoReading = checked; localStorage.setItem('fs-narrator-duo', checked); }
 
-  function onSleepChange(val) {
-    setSleepTimer(parseInt(val));
-    if (parseInt(val) > 0) {
-      const msg = nrT().sleepSet + ' ' + val + ' ' + nrT().min;
-      if (typeof showToast === 'function') showToast(msg);
-    }
-  }
-
-  function onKaraokeToggle(checked) {
-    STATE.karaokeEnabled = checked;
-    localStorage.setItem('fs-narrator-karaoke', checked);
-  }
-
-  function onAutoScrollToggle(checked) {
-    STATE.autoScroll = checked;
-    localStorage.setItem('fs-narrator-autoscroll', checked);
-  }
-
-  function onDuoToggle(checked) {
-    STATE.duoReading = checked;
-    localStorage.setItem('fs-narrator-duo', checked);
-  }
-
-  // ═══ VOICE PICKER ═══
   function populateVoiceSelect() {
-    const select = document.getElementById('narratorVoice');
-    if (!select) return;
+    const select = document.getElementById('narratorVoice'); if (!select) return;
     const voices = speechSynthesis.getVoices();
-    const l = getLang();
-    const langCode = l === 'ar' ? 'ar' : l === 'fr' ? 'fr' : 'en';
+    const l = getLang(); const langCode = l === 'ar' ? 'ar' : l === 'fr' ? 'fr' : 'en';
     select.innerHTML = '';
     const filtered = [];
-    voices.forEach((v, realIdx) => {
-      if (v.lang.startsWith(langCode)) filtered.push({ voice: v, idx: realIdx });
-    });
-    if (filtered.length === 0) {
-      voices.forEach((v, realIdx) => { filtered.push({ voice: v, idx: realIdx }); });
-    }
+    voices.forEach((v, realIdx) => { if (v.lang.startsWith(langCode)) filtered.push({ voice: v, idx: realIdx }); });
+    if (filtered.length === 0) { voices.forEach((v, realIdx) => { filtered.push({ voice: v, idx: realIdx }); }); }
     const currentVoice = getVoiceForLang(l);
     filtered.forEach(function(item) {
       const opt = document.createElement('option');
-      opt.value = item.idx;
-      opt.textContent = `${item.voice.name} (${item.voice.lang})`;
+      opt.value = item.idx; opt.textContent = `${item.voice.name} (${item.voice.lang})`;
       if (currentVoice && item.voice.name === currentVoice.name) opt.selected = true;
       select.appendChild(opt);
     });
   }
 
   function onVoiceChange(val) {
-    const voices = speechSynthesis.getVoices();
-    const voice = voices[parseInt(val)];
-    if (!voice) return;
+    const voices = speechSynthesis.getVoices(); const voice = voices[parseInt(val)]; if (!voice) return;
     const l = getLang();
-    if (l === 'ar') STATE.voiceAR = voice;
-    else if (l === 'fr') STATE.voiceFR = voice;
-    else STATE.voiceEN = voice;
+    if (l === 'ar') STATE.voiceAR = voice; else if (l === 'fr') STATE.voiceFR = voice; else STATE.voiceEN = voice;
   }
 
-  // ═══ LOAD SAVED SETTINGS ═══
   function loadSettings() {
     STATE.speed = parseFloat(localStorage.getItem('fs-narrator-speed')) || 1;
     STATE.pitch = parseFloat(localStorage.getItem('fs-narrator-pitch')) || 1;
@@ -753,144 +480,78 @@
     STATE.duoReading = localStorage.getItem('fs-narrator-duo') === 'true';
   }
 
-  // ═══ ESCAPE KEY ═══
   document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') {
-      var panel = document.getElementById('narratorPanel');
-      if (panel && !panel.classList.contains('hidden')) {
-        panel.classList.add('hidden');
-        e.stopPropagation();
-      }
-    }
+    if (e.key === 'Escape') { var panel = document.getElementById('narratorPanel'); if (panel && !panel.classList.contains('hidden')) { panel.classList.add('hidden'); e.stopPropagation(); } }
   });
 
-  // ═══ CLEANUP ═══
-  window.addEventListener('beforeunload', function() {
-    speechSynthesis.cancel();
-  });
-
-  // ═══ INIT ═══
-  function initNarrator() {
-    loadSettings();
-    updateLabels();
-    setTimeout(injectSpeakButtons, 500);
-    var lastLang = document.documentElement.lang || 'ar';
-    new MutationObserver(function() {
-      var newLang = document.documentElement.lang || 'ar';
-      if (newLang !== lastLang) {
-        lastLang = newLang;
-        setTimeout(function() { populateVoiceSelect(); updateLabels(); injectSpeakButtons(); }, 100);
-        if (STATE.playing) stopNarrator();
-      }
-    }).observe(document.documentElement, { attributes: true, attributeFilter: ['lang'] });
-  }
+  window.addEventListener('beforeunload', function() { speechSynthesis.cancel(); });
 
   // ═══ READ SINGLE SECTION ═══
   var sectionSpeaking = false;
 
   function speakSection(el) {
     if (STATE.playing) stopNarrator();
-    speakGen++;
-    speechSynthesis.cancel();
+    speakGen++; speechSynthesis.cancel();
     var text = cleanText(el.textContent || '');
     if (!text) return;
     sectionSpeaking = true;
     el.classList.add('narrator-active-card');
-
     var l = getLang();
     var utt = new SpeechSynthesisUtterance(text);
     var selectedVoice = getVoiceForLang(l); if (selectedVoice) utt.voice = selectedVoice;
     utt.lang = l === 'ar' ? 'ar-SA' : l === 'fr' ? 'fr-FR' : 'en-US';
     utt.rate = (l === 'ar') ? STATE.speed * 0.9 : STATE.speed;
     utt.pitch = STATE.pitch;
-
     var done = false;
-    function finish() {
-      if (done) return;
-      done = true;
-      sectionSpeaking = false;
-      el.classList.remove('narrator-active-card');
-      clearHighlights();
-    }
-
-    utt.onend = finish;
-    utt.onerror = finish;
-
-    if (STATE.karaokeEnabled) {
-      utt.onboundary = function(e) {
-        if (e.name === 'word' && e.charLength > 0) {
-          highlightWord(el, e.charIndex, e.charLength, text);
-        }
-      };
-    }
-
+    function finish() { if (done) return; done = true; sectionSpeaking = false; el.classList.remove('narrator-active-card'); clearHighlights(); }
+    utt.onend = finish; utt.onerror = finish;
+    if (STATE.karaokeEnabled) { utt.onboundary = function(e) { if (e.name === 'word' && e.charLength > 0) highlightWord(el, e.charIndex, e.charLength, text); }; }
     speechSynthesis.speak(utt);
-
     var pollStarted = false;
-    var pollInterval = setInterval(function() {
-      if (done) { clearInterval(pollInterval); return; }
-      if (speechSynthesis.speaking) pollStarted = true;
-      if (pollStarted && speechSynthesis.paused) speechSynthesis.resume();
-      if (pollStarted && !speechSynthesis.speaking && !speechSynthesis.pending) {
-        clearInterval(pollInterval);
-        finish();
-      }
-    }, 500);
-
-    setTimeout(function() {
-      if (!done) { clearInterval(pollInterval); finish(); }
-    }, Math.max(5000, (text.length / 3) * (1000 / STATE.speed)) + 3000);
+    var pollInterval = setInterval(function() { if (done) { clearInterval(pollInterval); return; } if (speechSynthesis.speaking) pollStarted = true; if (pollStarted && speechSynthesis.paused) speechSynthesis.resume(); if (pollStarted && !speechSynthesis.speaking && !speechSynthesis.pending) { clearInterval(pollInterval); finish(); } }, 500);
+    setTimeout(function() { if (!done) { clearInterval(pollInterval); finish(); } }, Math.max(5000, (text.length / 3) * (1000 / STATE.speed)) + 3000);
   }
 
   function stopSection() {
-    if (sectionSpeaking) {
-      speechSynthesis.cancel();
-      sectionSpeaking = false;
-      document.querySelectorAll('.narrator-active-card').forEach(function(e) { e.classList.remove('narrator-active-card'); });
-      clearHighlights();
-    }
+    if (sectionSpeaking) { speechSynthesis.cancel(); sectionSpeaking = false; document.querySelectorAll('.narrator-active-card').forEach(function(e) { e.classList.remove('narrator-active-card'); }); clearHighlights(); }
   }
 
   // ═══ INJECT SPEAK BUTTONS ═══
   function injectSpeakButtons() {
     document.querySelectorAll('.narrator-speak-btn').forEach(function(b) { b.remove(); });
-    var selectors = [
-      '.about-disclaimer', '.about-author', '.about-section',
-      '.principle-card', '.history-card', '.daily-card'
-    ];
+    var selectors = ['.concept-card', '.about-card', '.daily-card'];
     selectors.forEach(function(sel) {
       document.querySelectorAll(sel).forEach(function(card) {
         if (card.querySelector('.narrator-speak-btn')) return;
         var btn = document.createElement('button');
-        btn.className = 'narrator-speak-btn';
-        btn.textContent = '🔊';
-        btn.title = nrT().page;
-        btn.onclick = function(e) {
-          e.stopPropagation();
-          if (sectionSpeaking) { stopSection(); } else { speakSection(card); }
-        };
-        card.style.position = 'relative';
-        card.appendChild(btn);
+        btn.className = 'narrator-speak-btn'; btn.textContent = '🔊'; btn.title = nrT().page;
+        btn.onclick = function(e) { e.stopPropagation(); if (sectionSpeaking) { stopSection(); } else { speakSection(card); } };
+        card.style.position = 'relative'; card.appendChild(btn);
       });
     });
   }
 
   // Re-inject after renders
   var origRenderAbout = window.renderAbout;
-  if (origRenderAbout) {
-    window.renderAbout = function() { origRenderAbout(); setTimeout(injectSpeakButtons, 100); };
-  }
-  var origRenderLessons = window.renderLessons;
-  if (origRenderLessons) {
-    window.renderLessons = function() { origRenderLessons(); setTimeout(injectSpeakButtons, 100); };
-  }
-  var origRenderHistory = window.renderHistory;
-  if (origRenderHistory) {
-    window.renderHistory = function() { origRenderHistory(); setTimeout(injectSpeakButtons, 100); };
-  }
+  if (origRenderAbout) { window.renderAbout = function() { origRenderAbout(); setTimeout(injectSpeakButtons, 100); }; }
+  var origRenderConcepts = window.renderConcepts;
+  if (origRenderConcepts) { window.renderConcepts = function() { origRenderConcepts(); setTimeout(injectSpeakButtons, 100); }; }
+  var origRenderPrinciples = window.renderPrinciples;
+  if (origRenderPrinciples) { window.renderPrinciples = function() { origRenderPrinciples(); setTimeout(injectSpeakButtons, 100); }; }
+  var origRenderExplorer = window.renderExplorer;
+  if (origRenderExplorer) { window.renderExplorer = function() { origRenderExplorer(); setTimeout(injectSpeakButtons, 100); }; }
   var origRenderHome = window.renderHome;
-  if (origRenderHome) {
-    window.renderHome = function() { origRenderHome(); setTimeout(injectSpeakButtons, 100); };
+  if (origRenderHome) { window.renderHome = function() { origRenderHome(); setTimeout(injectSpeakButtons, 100); }; }
+
+  // ═══ INIT ═══
+  function initNarrator() {
+    loadSettings(); updateLabels();
+    setTimeout(injectSpeakButtons, 500);
+    var lastLang = document.documentElement.lang || 'ar';
+    new MutationObserver(function() {
+      var newLang = document.documentElement.lang || 'ar';
+      if (newLang !== lastLang) { lastLang = newLang; setTimeout(function() { populateVoiceSelect(); updateLabels(); injectSpeakButtons(); }, 100); if (STATE.playing) stopNarrator(); }
+    }).observe(document.documentElement, { attributes: true, attributeFilter: ['lang'] });
   }
 
   // ═══ EXPOSE GLOBALS ═══
