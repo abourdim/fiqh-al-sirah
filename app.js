@@ -387,7 +387,6 @@ function updateXPDisplay() {
   const badge = getCurrentBadge();
   const nextBadge = BADGES[BADGES.indexOf(badge) + 1];
   const el = document.getElementById('xpDisplay');
-  if (!el) return;
   const t = T[lang];
   const progress = nextBadge ? Math.min(100, ((data.xp - badge.xp) / (nextBadge.xp - badge.xp)) * 100) : 100;
   el.innerHTML = `
@@ -505,7 +504,6 @@ function initTabs() {
 // ═══════════════ SPLASH ═══════════════
 function initSplash() {
   const features = document.getElementById('splashFeatures');
-  if (!features) return;
   if (features) {
     features.innerHTML = T[lang].splashFeatures.map((f, i) =>
       `<div class="splash-feature" style="animation-delay:${0.3 + i * 0.3}s">${f}</div>`
@@ -513,7 +511,6 @@ function initSplash() {
   }
   let count = 5;
   const counter = document.getElementById('splashCount');
-  if (!counter) return;
   const interval = setInterval(() => {
     count--;
     if (counter) counter.textContent = count;
@@ -523,7 +520,6 @@ function initSplash() {
 
 function dismissSplash() {
   const splash = document.getElementById('splash');
-  if (!splash) return;
   if (splash) { splash.classList.add('hidden'); setTimeout(() => splash.style.display = 'none', 500); }
 }
 
@@ -691,7 +687,6 @@ function renderHabits() {
     </div>`;
   }).join('');
   const streakEl = document.getElementById('streakBadge');
-  if (!streakEl) return;
   if (streakEl) streakEl.innerHTML = streakHTML;
   updateHabitsProgress(habitsState);
 }
@@ -717,9 +712,7 @@ function resetHabits() {
 function updateHabitsProgress(hs) {
   const done = hs.done.length, total = HABITS.length;
   const fill = document.getElementById('habitsFill');
-  if (!fill) return;
   const txt = document.getElementById('habitsText');
-  if (!txt) return;
   if (fill) fill.style.width = (total > 0 ? (done / total * 100) : 0) + '%';
   if (txt) txt.textContent = `${done}/${total}`;
 }
@@ -740,7 +733,6 @@ function getStreak() { return JSON.parse(localStorage.getItem('fs-streak') || '{
 // ═══════════════ CONFETTI ═══════════════
 function launchConfetti() {
   const canvas = document.getElementById('confettiCanvas');
-  if (!canvas) return;
   canvas.style.display = 'block';
   const ctx = canvas.getContext('2d');
   canvas.width = window.innerWidth; canvas.height = window.innerHeight;
@@ -769,9 +761,7 @@ function renderQuiz() {
 function renderQuizQuestion() {
   const t = T[lang];
   const container = document.getElementById('quizContainer');
-  if (!container) return;
   const result = document.getElementById('quizResult');
-  if (!result) return;
   result.classList.add('hidden');
 
   if (quizState.current >= QUIZ.length) {
@@ -831,7 +821,6 @@ function answerQuiz(idx) {
   if (isCorrect) { quizState.score++; addXP(5, t.quizCorrect); playSound('success'); }
   else playSound('click');
   const feedback = document.getElementById('quizFeedback');
-  if (!feedback) return;
   feedback.classList.remove('hidden');
   feedback.innerHTML = `<div class="${isCorrect ? 'fb-correct' : 'fb-wrong'}">${isCorrect ? t.quizCorrect : t.quizWrong}</div>
     <button class="quiz-submit" onclick="quizState.current++;renderQuizQuestion()">${quizState.current < QUIZ.length - 1 ? t.quizNext : t.quizFinish}</button>`;
@@ -1053,7 +1042,6 @@ function initParticles() {
 // ═══════════════ TICKER ═══════════════
 function initTicker() {
   const ticker = document.getElementById('tickerText');
-  if (!ticker) return;
   const msgs = {
     ar: ['فقه السيرة — الشيخ محمد الغزالي','٢٠ محطة من حياة النبي ﷺ','الأحاديث محققة بواسطة الشيخ الألباني','لقد كان لكم في رسول الله أسوة حسنة'],
     en: ['Understanding the Sirah — Sheikh al-Ghazali','20 milestones from the Prophet\'s life','Hadith verified by Sheikh al-Albani','Indeed in the Messenger of Allah you have an excellent example'],
