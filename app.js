@@ -440,26 +440,26 @@ function setLang(l, init) {
   document.documentElement.lang = l;
   document.documentElement.dir = isRTL ? 'rtl' : 'ltr';
   const t = T[l];
-  document.getElementById('appTitle').textContent = t.appTitle;
-  document.getElementById('splashSub').textContent = t.splashSub;
-  document.getElementById('splashHint').textContent = t.splashHint;
-  document.getElementById('sirahTitle').textContent = t.sirahTitle;
-  document.getElementById('sirahDesc').textContent = t.sirahDesc;
-  document.getElementById('lessonsTitle').textContent = t.lessonsTitle;
-  document.getElementById('lessonsDesc').textContent = t.lessonsDesc;
-  document.getElementById('habitsTitle').textContent = t.habitsTitle;
-  document.getElementById('habitsDesc').textContent = t.habitsDesc;
-  document.getElementById('quizTitle').textContent = t.quizTitle;
-  document.getElementById('quizDesc').textContent = t.quizDesc;
-  document.getElementById('tabHome').textContent = t.tabHome;
-  document.getElementById('tabSirah').textContent = t.tabSirah;
-  document.getElementById('tabLessons').textContent = t.tabLessons;
-  document.getElementById('tabHabits').textContent = t.tabHabits;
-  document.getElementById('tabQuiz').textContent = t.tabQuiz;
-  document.getElementById('tabAbout').textContent = t.tabAbout;
-  document.getElementById('habitsReset').textContent = t.resetBtn;
-  document.getElementById('helpTitle').textContent = t.helpTitle;
-  document.getElementById('duaPanelTitle').textContent = t.duaPanelTitle;
+  { const _e=document.getElementById('appTitle'); if(_e) _e.textContent=t.appTitle; }
+  { const _e=document.getElementById('splashSub'); if(_e) _e.textContent=t.splashSub; }
+  { const _e=document.getElementById('splashHint'); if(_e) _e.textContent=t.splashHint; }
+  { const _e=document.getElementById('sirahTitle'); if(_e) _e.textContent=t.sirahTitle; }
+  { const _e=document.getElementById('sirahDesc'); if(_e) _e.textContent=t.sirahDesc; }
+  { const _e=document.getElementById('lessonsTitle'); if(_e) _e.textContent=t.lessonsTitle; }
+  { const _e=document.getElementById('lessonsDesc'); if(_e) _e.textContent=t.lessonsDesc; }
+  { const _e=document.getElementById('habitsTitle'); if(_e) _e.textContent=t.habitsTitle; }
+  { const _e=document.getElementById('habitsDesc'); if(_e) _e.textContent=t.habitsDesc; }
+  { const _e=document.getElementById('quizTitle'); if(_e) _e.textContent=t.quizTitle; }
+  { const _e=document.getElementById('quizDesc'); if(_e) _e.textContent=t.quizDesc; }
+  { const _e=document.getElementById('tabHome'); if(_e) _e.textContent=t.tabHome; }
+  { const _e=document.getElementById('tabSirah'); if(_e) _e.textContent=t.tabSirah; }
+  { const _e=document.getElementById('tabLessons'); if(_e) _e.textContent=t.tabLessons; }
+  { const _e=document.getElementById('tabHabits'); if(_e) _e.textContent=t.tabHabits; }
+  { const _e=document.getElementById('tabQuiz'); if(_e) _e.textContent=t.tabQuiz; }
+  { const _e=document.getElementById('tabAbout'); if(_e) _e.textContent=t.tabAbout; }
+  { const _e=document.getElementById('habitsReset'); if(_e) _e.textContent=t.resetBtn; }
+  { const _e=document.getElementById('helpTitle'); if(_e) _e.textContent=t.helpTitle; }
+  { const _e=document.getElementById('duaPanelTitle'); if(_e) _e.textContent=t.duaPanelTitle; }
   document.querySelectorAll('.lang-opt').forEach(b => b.classList.toggle('active', b.dataset.lang === l));
   if (!init) renderAll();
 }
@@ -471,7 +471,7 @@ function setTheme(t) {
   document.documentElement.dataset.theme = t;
   localStorage.setItem('fs-theme', t);
   const icons = {sirah:'🕌',night:'🌙',desert:'🏜️'};
-  document.getElementById('themeIcon').textContent = icons[t] || '🕌';
+  { const _e=document.getElementById('themeIcon'); if(_e) _e.textContent=icons[t] || '🕌'; }
 }
 function cycleTheme() {
   const current = getTheme();
@@ -540,7 +540,7 @@ function renderHome() {
   const dayIdx = new Date().getDate() % SIRAH.length;
   const s = SIRAH[dayIdx];
   const sd = s[lang];
-  document.getElementById('dailyCard').innerHTML = `
+  (document.getElementById('dailyCard')||{}).innerHTML= `
     <div class="daily-label">${t.dailyLabel}</div>
     <div class="daily-title">${sd.title}</div>
     <div class="daily-body">${ageMode === 'young' && sd.young ? sd.young : sd.event}</div>
@@ -553,7 +553,7 @@ function renderHome() {
     {icon:'🎓',tab:'quiz',title:t.tabQuiz,desc:lang==='ar'?'اختبر معرفتك':lang==='fr'?'Testez-vous':'Test yourself'},
     {icon:'📚',tab:'about',title:t.tabAbout,desc:lang==='ar'?'عن الكتاب':lang==='fr'?'A propos du livre':'About the book'},
   ];
-  document.getElementById('homeGrid').innerHTML = sections.map(s => `
+  (document.getElementById('homeGrid')||{}).innerHTML= sections.map(s => `
     <div class="home-card" onclick="document.querySelector('[data-tab=${s.tab}]').click()">
       <span class="hc-icon">${s.icon}</span>
       <div class="hc-title">${s.title}</div>
@@ -600,7 +600,7 @@ function renderSirah() {
       </div>
     </div>`;
   }).join('');
-  document.getElementById('sirahContainer').innerHTML = searchBar + cards;
+  (document.getElementById('sirahContainer')||{}).innerHTML= searchBar + cards;
 }
 
 function filterSirah(query) {
@@ -639,7 +639,7 @@ async function shareSirah(idx) {
 // ═══════════════ RENDER: LESSONS ═══════════════
 function renderLessons() {
   const t = T[lang];
-  document.getElementById('lessonsContainer').innerHTML = LESSONS_DATA.map(l => {
+  (document.getElementById('lessonsContainer')||{}).innerHTML= LESSONS_DATA.map(l => {
     const d = l[lang];
     return `
     <div class="anxiety-card scroll-reveal">
@@ -674,7 +674,7 @@ function renderHabits() {
   }
   const streak = getStreak();
   const streakHTML = streak > 0 ? `<div class="streak-badge">🔥 ${streak} ${T[lang].streakMsg}</div>` : '';
-  document.getElementById('habitsContainer').innerHTML = HABITS.map((h, i) => {
+  (document.getElementById('habitsContainer')||{}).innerHTML= HABITS.map((h, i) => {
     const d = h[lang];
     const isDone = habitsState.done.includes(i);
     return `
@@ -893,7 +893,7 @@ function renderAbout() {
     }
   };
   const a = about[lang];
-  document.getElementById('aboutContainer').innerHTML = `
+  (document.getElementById('aboutContainer')||{}).innerHTML= `
     <div class="about-disclaimer">
       <div class="about-disclaimer-title">${a.disclaimerTitle}</div>
       <p>${a.disclaimer}</p>
@@ -940,14 +940,14 @@ function renderHelp() {
       {title:'🧒 Modes',body:'Mode « Jeune Explorateur » pour enfants avec textes simplifies. Mode « Jeune Savant » pour le contenu complet.'},
     ]
   };
-  document.getElementById('helpBody').innerHTML = help[lang].map(h => `
+  (document.getElementById('helpBody')||{}).innerHTML= help[lang].map(h => `
     <div class="help-item"><div class="help-item-title">${h.title}</div><div>${h.body}</div></div>
   `).join('');
 }
 
 // ═══════════════ RENDER: DUAS ═══════════════
 function renderDuas() {
-  document.getElementById('duaPanelContent').innerHTML = DUAS.map(d => {
+  (document.getElementById('duaPanelContent')||{}).innerHTML= DUAS.map(d => {
     const dd = d[lang];
     return `<div class="dua-item"><div class="dua-item-label">${dd.label}</div><div class="dua-item-ar">${dd.text}</div>${dd.tr ? `<div class="dua-item-tr">${dd.tr}</div>` : ''}</div>`;
   }).join('');
