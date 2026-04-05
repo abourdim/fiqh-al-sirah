@@ -505,6 +505,7 @@ function initTabs() {
 // ═══════════════ SPLASH ═══════════════
 function initSplash() {
   const features = document.getElementById('splashFeatures');
+  if (!features) return;
   if (features) {
     features.innerHTML = T[lang].splashFeatures.map((f, i) =>
       `<div class="splash-feature" style="animation-delay:${0.3 + i * 0.3}s">${f}</div>`
@@ -512,6 +513,7 @@ function initSplash() {
   }
   let count = 5;
   const counter = document.getElementById('splashCount');
+  if (!counter) return;
   const interval = setInterval(() => {
     count--;
     if (counter) counter.textContent = count;
@@ -521,6 +523,7 @@ function initSplash() {
 
 function dismissSplash() {
   const splash = document.getElementById('splash');
+  if (!splash) return;
   if (splash) { splash.classList.add('hidden'); setTimeout(() => splash.style.display = 'none', 500); }
 }
 
@@ -688,6 +691,7 @@ function renderHabits() {
     </div>`;
   }).join('');
   const streakEl = document.getElementById('streakBadge');
+  if (!streakEl) return;
   if (streakEl) streakEl.innerHTML = streakHTML;
   updateHabitsProgress(habitsState);
 }
@@ -713,7 +717,9 @@ function resetHabits() {
 function updateHabitsProgress(hs) {
   const done = hs.done.length, total = HABITS.length;
   const fill = document.getElementById('habitsFill');
+  if (!fill) return;
   const txt = document.getElementById('habitsText');
+  if (!txt) return;
   if (fill) fill.style.width = (total > 0 ? (done / total * 100) : 0) + '%';
   if (txt) txt.textContent = `${done}/${total}`;
 }
@@ -763,7 +769,9 @@ function renderQuiz() {
 function renderQuizQuestion() {
   const t = T[lang];
   const container = document.getElementById('quizContainer');
+  if (!container) return;
   const result = document.getElementById('quizResult');
+  if (!result) return;
   result.classList.add('hidden');
 
   if (quizState.current >= QUIZ.length) {
@@ -823,6 +831,7 @@ function answerQuiz(idx) {
   if (isCorrect) { quizState.score++; addXP(5, t.quizCorrect); playSound('success'); }
   else playSound('click');
   const feedback = document.getElementById('quizFeedback');
+  if (!feedback) return;
   feedback.classList.remove('hidden');
   feedback.innerHTML = `<div class="${isCorrect ? 'fb-correct' : 'fb-wrong'}">${isCorrect ? t.quizCorrect : t.quizWrong}</div>
     <button class="quiz-submit" onclick="quizState.current++;renderQuizQuestion()">${quizState.current < QUIZ.length - 1 ? t.quizNext : t.quizFinish}</button>`;
